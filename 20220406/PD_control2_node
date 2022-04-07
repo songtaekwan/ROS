@@ -17,11 +17,10 @@ geometry_msgs::Twist control_vel_msg;
 nav_msgs::Odometry estimated_odom;
 
 
-#define kp 0.5
-#define kd 20.0
+#define kp 1.0
+#define kd 7.0
 #define dt 0.1
-
-//float current_val;         
+      
 float error;
 float prev_error;
 float d_error;    
@@ -73,10 +72,10 @@ int main (int argc, char **argv)
 	{
 		if (flag_AEB.data == true)
 		{
-			error = (current_val.data - aim)/dt;
+			error = current_val.data - aim;
 			kp_term = kp * error;
 			
-			d_error = (error - prev_error);
+			d_error = error - prev_error;
             kd_term = kd * d_error;
 			
 			prev_error = error;
@@ -87,16 +86,6 @@ int main (int argc, char **argv)
 			
 			ROS_INFO("control= %f",control);
 			
-			/*
-			if(control > 0 )
-            {
-	            control_vel_msg.linear.x = control;
-	        }
-	        else
-	        {
-		        control_vel_msg.linear.x = 0;
-            }
-            */
 			pub_control_vel.publish(control_vel_msg);
 		}
 		else
